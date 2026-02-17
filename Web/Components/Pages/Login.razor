@@ -1,0 +1,71 @@
+@page "/"
+@page "/account/login"
+@using Web.Components.Layout
+
+@layout Layout.AuthLayout
+
+@using System.ComponentModel.DataAnnotations
+
+<MudPaper Class="pa-6 mx-auto mt-12" Elevation="6" Style="max-width:400px;">
+    <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">
+        Login 
+    </MudText>
+
+    <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <MudTextField @bind-Value="loginModel.UserName"
+                      Label="User Name"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      RequiredError="User name is required"
+                      For="@(() => loginModel.UserName)"
+                      Class="mb-3" />
+
+        <MudTextField @bind-Value="loginModel.UserPassword"
+                      Label="Password"
+                      Variant="Variant.Outlined"
+                      Required="true"
+                      RequiredError="Password is required"
+                      For="@(() => loginModel.UserPassword)"
+                      Class="mb-3" />
+
+        
+
+        <MudButton Href="/Dashboard"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   FullWidth="true">
+            Login
+        </MudButton>
+    </EditForm>
+    </MudPaper>
+
+
+
+@code {
+    private LoginModel loginModel = new();
+
+    private void HandleLogin()
+    {
+        // TODO: Call API or authentication service
+        Console.WriteLine($"User Name: {loginModel.UserName}, Password: {loginModel.UserPassword}");
+    }
+
+    public class LoginModel
+    {
+        [Required]
+        [EmailAddress]
+        public string UserName { get; set; }
+
+        [Required]
+        [MinLength(6)]
+  
+        public string UserPassword { get; set; }
+    } 
+
+        
+     
+    
+}

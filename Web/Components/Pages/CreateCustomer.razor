@@ -1,0 +1,68 @@
+@page "/customers/create"
+@rendermode InteractiveServer
+
+@using Application.DTO
+@using Application.Services.Customers
+@inject ICustomerService CustomerService
+@inject NavigationManager Navigation
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Create Customer</PageTitle>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Create Customer</h3>
+                <a href="/customers" class="btn btn-secondary btn-sm">Back to list</a>
+            </div>
+
+            <div class="card">
+               <div class="card-body">
+                <EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+                    <DataAnnotationaValidator />
+                    <ValidationSummary class="alert alert-danger py-2 mb-3" />
+                    <div class="row g-2 mb-2">
+                        <div class=col-md-6">
+                            <label for="Name" class="form-label">Name</label>
+                            <InputText id="Name" class="form-control form-control-sm" @bind-Value="Model.Name" placeholder="Name"  />
+                            <ValidationMessage For="@(() =>Model.Name)" />
+                        </div>
+                        <div class=col-md-6">
+                            <label for="Email" class="form-label">Email</label>
+                            <InputText id="Email" class="form-control form-control-sm" @bind-Value="Model.Email" placeholder="Email"  />
+                            <ValidationMessage For="@(() =>Model.Email)" />
+                        </div>
+                        <div class=col-md-6">
+                            <label for="Phone" class="form-label">Phone</label>
+                            <InputText id="Phone" class="form-control form-control-sm" @bind-Value="Model.Phone" placeholder="Phone"  />
+                            <ValidationMessage For="@(() =>Model.Phone)" />
+                        </div>
+                        <div class=col-md-6">
+                            <label for="Address" class="form-label">Address</label>
+                            <InputText id="Address" class="form-control form-control-sm" @bind-Value="Model.Address" placeholder="Address"  />
+                            <ValidationMessage For="@(() =>Model.Address)" />
+                        </div>
+                        <div class=col-md-6">
+                            <label for="City" class="form-label">City</label>
+                            <InputText id="City" class="form-control form-control-sm" @bind-Value="Model.City" placeholder="City"  />
+                            <ValidationMessage For="@(() =>Model.City)" />
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Create </button>
+                    </div>"
+                </EditForm>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    private CustomerCreateDTO  Model {get; set;} = new();
+
+    private void OnValidSubmit()
+    {
+        CustomerService.CreateCustomer(Model);
+        Navigation.NavigateTo("/customers");
+    }
+}

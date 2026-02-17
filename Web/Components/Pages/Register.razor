@@ -1,0 +1,119 @@
+@page "/users/Register"
+@rendermode InteractiveServer
+@using Application.DTO
+@using Application.Interfaces
+@using Application.Services.Identity
+@using Application.Services.Users
+@using System.ComponentModel.DataAnnotations
+
+@inject IIdentityService IdentityService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Register</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="py-4">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h4" Color="Color.Primary">
+                <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Class="mr-2" />
+                Register
+            </MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <EditForm Model="@Model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+
+                @if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    <MudAlert Severity="Severity.Error" Class="mb-3">
+                        @ErrorMessage
+                    </MudAlert>
+                }
+
+                <div class="d-flex flex-column gap-3">
+                    <MudTextField @bind-Value="Model.FirstName"
+                                  Label="First Name"
+                                  Placeholder="Enter first name"
+                                  Variant="Variant.Outlined"
+                                  FullWidth="true" />
+                    <ValidationMessage For="@(() => Model.FirstName)" />
+
+                    <MudTextField @bind-Value="Model.LastName"
+                                  Label="LastName"
+                                  Placeholder="Last Name"
+                                  Variant="Variant.Outlined"
+                                  FullWidth="true" />
+                    <ValidationMessage For="@(() => Model.LastName)" />
+
+                    <MudTextField @bind-Value="Model.Email"
+                                  Label="Email"
+                                  Placeholder="Enter email"
+                                  Variant="Variant.Outlined"
+                                  FullWidth="true" />
+                    <ValidationMessage For="@(() => Model.Email)" />
+                    
+                     <MudTextField @bind-Value="Model.PhoneNumber"
+                                  Label="PhoneNumber"
+                                  Placeholder="Enter PhoneNumber"
+                                  Variant="Variant.Outlined"
+                                  FullWidth="true" />
+                    <ValidationMessage For="@(() => Model.PhoneNumber)" />
+
+                    <MudTextField @bind-Value="Model.UserName"
+                                  Label="User name"
+                                  InputType="InputType.Text"
+                                  Placeholder="Enter username"
+                                  Variant="Variant.Outlined"
+                                  FullWidth="true" />
+                    <ValidationMessage For="@(() => Model.UserName)" />
+
+                    <MudTextField @bind-Value="Model.Password"
+                                  Label="Password"
+                                  InputType="InputType.Password"
+                                  Placeholder="Enter password"
+                                  Variant="Variant.Outlined"
+                                  FullWidth="true" />
+                    <ValidationMessage For="@(() => Model.Password)" />
+                    
+                </div>
+                <div class="d-flex gap-3 gap-sm-2 mt-4">
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Success"
+                               EndIcon="@Icons.Material.Filled.Save"
+                               Size="Size.Medium"
+                               FullWidth="false">
+                        Register
+                    </MudButton>
+                    <MudButton Href="/users"
+                               Variant="Variant.Filled"
+                               Color="Color.Error"
+                               EndIcon="@Icons.Material.Filled.Cancel"
+                               Size="Size.Medium"
+                               FullWidth="false">
+                        Cancel
+                    </MudButton>
+                </div>
+            </EditForm>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private RegisterUserDTO Model { get; set; } = new();
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            ErrorMessage = string.Empty;
+            await IdentityService.RegisterUser(Model);
+            NavigationManager.NavigateTo("/users");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+}

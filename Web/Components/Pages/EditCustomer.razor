@@ -1,0 +1,88 @@
+@page "/customers/edit/{Id:int}"
+
+@using Domain.Entities
+@using Application.DTO
+@using Application.Services.Customers
+@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
+@inject ICustomerService CustomerService
+@inject NavigationManager Navigation
+
+<PageTitle>Edit Customer</PageTitle>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Create customer</h3>
+                <a href="/customers" class="btn btn-outline-secondary btn-sm">Back to list</a>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="row g-2 mb-2">
+                            <div class="col-md-6">
+                                <label for="Name">Name</label>
+                                <InputText id="Name" @bind-Value="Model.Name" placeholder="Enter Name" />
+                                <ValidationMessage For="@(() => Model.Name)" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Phone">Phone</label>
+                                <InputText id="Phone" @bind-Value="Model.Phone" placeholder="Enter Phone" />
+                                <ValidationMessage For="@(() => Model.Phone)" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Address">Address</label>
+                                <InputText id="Address" @bind-Value="Model.Address" placeholder="Enter Address" />
+                                <ValidationMessage For="@(() => Model.Address)" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="City">City</label>
+                                <InputText id="City" @bind-Value="Model.City" placeholder="Enter city" />
+                                <ValidationMessage For="@(() => Model.City)" />
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+
+    public int Id { get; set; }
+
+    private CustomerUpdateDTO Model { get; set; } = new();
+
+    private bool loaded;
+
+    protected override void OnParametersSet()
+    {
+        var customer = CustomerService.GetCustomerById(Id);
+        if (customer != null)
+        {
+            Model = new CustomerUpdateDTO
+            {
+               Name = customer.Name ?? "",
+               Phone = customer.Phone ?? "",
+               Address = customer.Address ?? "",
+               City = customer.City ?? ""
+            };
+        }
+        loaded = true;
+    }
+
+    private void OnValidSubmit()
+    {
+        if (Model == null) return;
+        CustomerService.UpdateCustomer(Id,Model);
+        Navigation.NavigateTo("/customers");
+    }
+}

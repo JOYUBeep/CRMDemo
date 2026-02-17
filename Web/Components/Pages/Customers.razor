@@ -1,0 +1,86 @@
+﻿@page "/customers"
+@using Domain.Entities
+@using Application.Services.Customers
+
+
+ @inject ICustomerService CustomerService 
+
+<PageTitle>Customers</PageTitle>
+
+<h3>Customers List</h3>
+<div>
+<MudSpacer />
+ <MudButton Href="/Customers/create" StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large">Add New Customer </MudButton>
+</div>
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+    <MudPaper Elevation="0" Class="mb-6">
+        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Class="p-6">
+@* <div>
+    <a href="/customers/create" class="btn btn-primary mb-3">Add Customer</a>
+</div> *@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+        @foreach (var customer in _customers)
+        {
+            <tr>
+                <td>@customer.Name</td>
+                <td>@customer.Email</td>
+                <td>@customer.Phone</td>
+                <td>@customer.Address</td>
+                <td>@customer.City</td>
+
+                <td>
+                    @* <a href="/customers/@customer.Id" class="btn btn-primary">Details</a>
+                    <a href="/customers/edit/@customer.Id" class="btn btn-secondary">Edit</a> *@
+                    <MudTd DataLabel="Actions" Style="text-align:center">
+                    <MudStack Row="true" Spacing="2" Justify="Justify.Center">
+             <MudButton Href="@string.Format("/Customers/edit/{0}", customer.Id)" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Warning" 
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Edit">
+                            Edit
+                        </MudButton>
+             <MudButton Href="@string.Format("/Customers/{0}", customer.Id)" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Primary" 
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.MoreHoriz">
+                            View
+                        </MudButton>
+                       </MudStack>
+                </MudTd>
+                  
+            </td>
+        </tr>
+    }
+    
+    </table>
+    </MudStack>
+     </MudPaper>
+</MudContainer>
+        
+
+
+
+
+@code {
+        
+    List<Customer> _customers = new List<Customer> ();
+
+    protected override void OnInitialized()
+    {
+        _customers = CustomerService.GetAllCustomers();
+
+    }
+}

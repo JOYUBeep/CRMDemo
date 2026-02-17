@@ -1,0 +1,63 @@
+@page "/supportTickets/create"
+@rendermode InteractiveServer
+
+@using Application.DTO
+@using Application.Services.SupportTickets
+@inject ISupportTicketService SupportTicketService
+@inject NavigationManager Navigation
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Create Tickets</PageTitle>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Create Tickets</h3>
+                <a href="/supportTickets" class="btn btn-secondary btn-sm">Back to list</a>
+            </div>
+
+             <div class="card">
+               <div class="card-body">
+                <EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+                    <DataAnnotationaValidator />
+                    <ValidationSummary class="alert alert-danger py-2 mb-3" />
+                    <div class="row g-2 mb-2">
+                        <div class=col-md-6">
+                            <label for="CustomerId" class="form-label">CustomerId</label>
+                            <InputNumber id="CustomerId" class="form-control form-control-sm" @bind-Value="Model.CustomerId" placeholder="CustomerId"  />
+                            <ValidationMessage For="@(() =>Model.CustomerId)" />
+                        </div>
+                        <div class=col-md-6">
+                            <label for="Subject" class="form-label">Subject</label>
+                            <InputText id="Subject" class="form-control form-control-sm" @bind-Value="Model.Subject" placeholder="Subject"  />
+                            <ValidationMessage For="@(() =>Model.Subject)" />
+                        </div>
+                        <div class=col-md-6">
+                            <label for="Description" class="form-label">Description</label>
+                            <InputText id="Description" class="form-control form-control-sm" @bind-Value="Model.Description" placeholder="Description"  />
+                            <ValidationMessage For="@(() =>Model.Description)" />
+                        </div>
+                        <div class=col-md-6">
+                            <label for="Status" class="form-label">Status</label>
+                            <InputText id="Status" class="form-control form-control-sm" @bind-Value="Model.Status" placeholder="Status"  />
+                            <ValidationMessage For="@(() =>Model.Status)" />
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Create </button>
+                    </div>"
+                </EditForm>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    private SupportTicketCreateDTO  Model {get; set;} = new();
+
+    private void OnValidSubmit()
+    {
+        SupportTicketService.CreateSupportTicket(Model);
+        Navigation.NavigateTo("/supportTickets");
+    }
+}

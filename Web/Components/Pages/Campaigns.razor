@@ -1,0 +1,80 @@
+﻿@page "/Campaigns"
+@using Application.Services.Campaigns
+@using Domain.Entities
+
+
+ @inject ICampaignService CampaignService 
+
+<PageTitle>Campaigns</PageTitle>
+
+<h3>Campaign List</h3>
+@* <div>
+    <a href="/campaigns/create" class="btn btn-primary mb-3">Add Campaign</a>
+</div> *@
+
+ <MudSpacer />
+ <MudButton Href="/Campaigns/create"  StartIcon="@Icons.Material.Filled.Add"  Variant="Variant.Filled"  Color="Color.Primary" Size="Size.Large"> Add New Campaign</MudButton>
+
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+    <MudPaper Elevation="0" Class="mb-6">
+        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Class="p-6">
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Campaign Type</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+        @foreach (var campaign in _campaigns)
+        {
+            <tr>
+                <td>@campaign.Name</td>
+                <td>@campaign.StartDate.ToShortDateString()</td>
+                <td>@campaign.EndDate.ToShortDateString()</td>
+                <td>@campaign.Description</td>
+                <td>@campaign.Status</td>
+                <td>@campaign.CampaignType</td>
+              
+                    @* <a href="/campaigns/@campaign.Id" class="btn btn-primary">Details</a>
+                    <a href="/campaigns/edit/@campaign.Id" class="btn btn-secondary">Edit</a> *@
+                    <MudTd DataLabel="Actions" Style="text-align:center">
+                    <MudStack Row="true" Spacing="2" Justify="Justify.Center">
+             <MudButton Href="@string.Format("/Campaigns/Edit/{0}", campaign.Id)" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Warning" 
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Edit">
+                            Edit
+                        </MudButton>
+             <MudButton Href="@string.Format("/Campaigns/{0}", campaign.Id)" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Primary" 
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.MoreHoriz">
+                            View
+                        </MudButton>
+                       </MudStack>
+                </MudTd>
+            </tr>
+    }
+    </table>
+     </MudStack>
+     </MudPaper>
+</MudContainer>
+            
+@code {
+
+    List<Campaign> _campaigns = new List<Campaign> ();
+
+    protected override void OnInitialized()
+    {
+        _campaigns = CampaignService.GetAllCampaigns();
+    }
+}

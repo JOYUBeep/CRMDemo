@@ -1,0 +1,88 @@
+@page "/campaigns/edit/{Id:int}"
+
+@using Domain.Entities
+@using Application.DTO
+@using Application.Services.Campaigns
+@using System.ComponentModel.DataAnnotations
+@rendermode InteractiveServer
+@inject ICampaignService CampaignService
+@inject NavigationManager Navigation
+
+<PageTitle>Edit Campaign</PageTitle>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Create Campaign</h3>
+                <a href="/campaigns" class="btn btn-outline-secondary btn-sm">Back to list</a>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="row g-2 mb-2">
+                            <div class="col-md-6">
+                                <label for="Name">Name</label>
+                                <InputText id="Name" @bind-Value="Model.Name" placeholder="Enter Name" />
+                                <ValidationMessage For="@(() => Model.Name)" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Description">Description</label>
+                                <InputText id="Description" @bind-Value="Model.Description" placeholder="Enter Description" />
+                                <ValidationMessage For="@(() => Model.Description)" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="Status">Status</label>
+                                <InputText id="Status" @bind-Value="Model.Status" placeholder="Enter Status" />
+                                <ValidationMessage For="@(() => Model.Status)" />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="CampaignType">CampaignType</label>
+                                <InputText id="CampaignType" @bind-Value="Model.CampaignType" placeholder="Enter CampaignType" />
+                                <ValidationMessage For="@(() => Model.CampaignType)" />
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">Update</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+
+    public int Id { get; set; }
+
+    private CampaignUpdateDTO Model { get; set; } = new();
+
+    private bool loaded;
+
+    protected override void OnParametersSet()
+    {
+        var campaign = CampaignService.GetCampaignById(Id);
+        if (campaign != null)
+        {
+            Model = new CampaignUpdateDTO
+            {
+               Name = campaign.Name ?? "",
+               Description = campaign.Description ?? "",
+               Status = campaign.Status ?? "",
+               CampaignType = campaign.CampaignType ?? ""
+            };
+        }
+        loaded = true;
+    }
+
+    private void OnValidSubmit()
+    {
+        if (Model == null) return;
+        CampaignService.UpdateCampaign(Id,Model);
+        Navigation.NavigateTo("/campaigns");
+    }
+}

@@ -1,0 +1,48 @@
+@page "/campaigns/{Id:int}"
+@using Domain.Entities
+@using Application.Services.Campaigns
+
+@inject ICampaignService CampaignService 
+
+
+<PageTitle>Campaign Detail</PageTitle>
+
+<h1>Campaign Detail</h1>
+<div>
+    <a href="/campaigns" class="btn btn-primary mb-3">Back to Campaigns List</a>
+</div>
+
+<div>
+    @if (campaign != null)
+    {
+     <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@campaign.Name</dd>
+        
+        <dt class="col-sm-2">Start Date</dt>
+        <dd class="col-sm-10">@campaign.StartDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">End Date</dt>
+        <dd class="col-sm-10">@campaign.EndDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">Description</dt>
+        <dd class="col-sm-10">@campaign.Description</dd>
+        
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">@campaign.Status</dd>
+        
+        <dt class="col-sm-2">Campaign Type</dt>
+        <dd class="col-sm-10">@campaign.CampaignType</dd>
+    
+     </dl>
+    }
+</div>
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Campaign campaign;
+    protected override void OnInitialized()
+    {
+         campaign = CampaignService.GetCampaignById(Id);
+    }
+}

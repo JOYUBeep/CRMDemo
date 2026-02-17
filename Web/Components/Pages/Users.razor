@@ -1,0 +1,60 @@
+@using Application.Services.Identity
+@using Application.Services.Users
+@using Application.DTO
+@using Infrastructure.Identity
+@using Microsoft.AspNetCore.Identity
+
+
+@page "/users"
+
+@inject IIdentityService IdentityService
+
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Users</PageTitle>
+
+<h3>User List</h3>
+
+<div>
+    <a href="/users/Register" class="btn btn-primary mb-3">Add User</a>
+</div>
+
+
+            <MudTable Items="_identity" Hover="true" Dense="true">
+                <HeaderContent>
+                    <MudTh>Id</MudTh>
+                    <MudTh>FirstName</MudTh>
+                    <MudTh>LastName</MudTh>
+                    <MudTh>PhoneNumber</MudTh>
+                    <MudTh>UserName</MudTh>
+                    <MudTh>Created At</MudTh>
+                    <MudTh>Updated At</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd>@context.Id</MudTd>
+                    <MudTd>@context.FirstName</MudTd>
+                    <MudTd>@context.LastName</MudTd>
+                    <MudTd>@context.PhoneNumber</MudTd>
+                    <MudTd>@context.UserName</MudTd>
+                    <MudTd>@context.CreatedAt</MudTd>
+                    <MudTd>@context.UpdatedAt</MudTd>
+                </RowTemplate>
+            </MudTable>
+
+@code {
+    private List<UserDetailDTO> _identity = new List<UserDetailDTO>();
+
+        protected override async Task OnInitializedAsync()
+        {
+            await LoadUsers();
+        }
+
+        private async Task LoadUsers()
+        {
+            _identity = await IdentityService.GetAllUsers();
+        }
+
+}

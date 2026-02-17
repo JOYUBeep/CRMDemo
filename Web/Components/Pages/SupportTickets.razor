@@ -1,0 +1,78 @@
+﻿@using Domain.Entities
+@using Application.Services.SupportTickets
+@page "/supportTickets"
+
+@inject ISupportTicketService SupportTicketService
+
+<PageTitle>Tickets</PageTitle>
+
+<h3>supportTickets</h3>
+
+    <MudSpacer />
+ <MudButton Href="/supportTickets/create"  StartIcon="@Icons.Material.Filled.Add"  Variant="Variant.Filled"  Color="Color.Primary" Size="Size.Large"> Add New Ticket</MudButton>
+
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+    <MudPaper Elevation="0" Class="mb-6">
+        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Class="p-6">
+    @* <a href="/supportTickets/CreateSupportTicket" class="btn btn-primary mb-3">Add Ticket</a>
+</div> *@
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Resolved At</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+        @foreach (var supportTicket in supportTickets)
+        {
+            <tr>
+                <td>@supportTicket.Subject</td>
+                <td>@supportTicket.Description</td>
+                <td>@supportTicket.Status</td>
+                <td>@supportTicket.CreatedAt</td>
+                <td>@supportTicket.ResolvedAt</td>
+                 <td>
+                  @* <a href="/supportTickets/@supportTicket.Id" class="btn btn-primary">Details</a>
+                    <a href="/supportTickets/edit/@supportTicket.Id" class="btn btn-secondary">Edit</a> *@
+                    <MudTd DataLabel="Actions" Style="text-align:center">
+                    <MudStack Row="true" Spacing="2" Justify="Justify.Center">
+             <MudButton Href="@string.Format("/SupportTicket/Edit/{0}", supportTicket.Id)" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Warning" 
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.Edit">
+                            Edit
+                        </MudButton>
+             <MudButton Href="@string.Format("/SupportTicket/{0}", supportTicket.Id)" 
+                                   Variant="Variant.Filled" 
+                                   Color="Color.Primary" 
+                                   Size="Size.Small"
+                                   StartIcon="@Icons.Material.Filled.MoreHoriz">
+                            View
+                        </MudButton>
+                       </MudStack>
+                </MudTd>
+            </td>
+             </tr>
+    }
+    </table>
+     </MudStack>
+     </MudPaper>
+</MudContainer>
+               
+
+@code {
+    List<SupportTicket> supportTickets = new List<SupportTicket>();
+    
+    protected override void OnInitialized()
+    {
+        supportTickets = SupportTicketService.GetAllSupportTickets();
+    }
+}
